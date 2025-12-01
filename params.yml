@@ -1,0 +1,11 @@
+prepare:
+  img_size: 64
+  augment: true
+train:
+  epochs: 15
+  batch_size: 64
+  lr: 0.001
+  model: "simple_cnn"   # or "mobilenetv2_ft"
+evaluate:
+  batch_size: 64
+
