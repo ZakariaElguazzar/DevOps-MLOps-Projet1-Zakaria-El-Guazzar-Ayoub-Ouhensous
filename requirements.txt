@@ -1,1 +1,7 @@
-tensorflow>=2.11\nscikit-learn\nmatplotlib\npandas\nopencv-python\nalbumentations\ndvc
+tensorflow>=2.11
+scikit-learn
+matplotlib
+pandas
+opencv-python
+albumentations
+dvc

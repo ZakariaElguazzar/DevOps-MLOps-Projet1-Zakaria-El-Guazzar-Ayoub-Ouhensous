@@ -1,4 +1,0 @@
-[core]
-    remote = myremote
-['remote "myremote"']
-    url = /home/zakaria-el-guazzar/Documents/dvc_remote/image-classification-dvc/

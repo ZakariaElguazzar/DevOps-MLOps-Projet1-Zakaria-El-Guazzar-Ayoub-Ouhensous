@@ -5,27 +5,27 @@ stages:
       - src/prepare.py
       - params.yaml
     outs:
-      - data/cifar10.npz
+      - data/cifar100.npz
 
   train:
     cmd: python src/train.py
     deps:
       - src/train.py
       - params.yaml
-      - data/cifar10.npz
+      - data/cifar100.npz
     outs:
       - models/model.h5
     metrics:
-      - metrics.json
+      - metrics/train_metrics.json
 
   evaluate:
     cmd: python src/evaluate.py
     deps:
       - src/evaluate.py
       - models/model.h5
-      - data/cifar10.npz
+      - data/cifar100.npz
     outs:
       - plots/confusion.png
     metrics:
-      - metrics.json
+      - metrics/evaluate_metrics.json
 

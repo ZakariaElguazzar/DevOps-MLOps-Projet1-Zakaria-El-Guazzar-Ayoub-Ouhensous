@@ -1,0 +1,66 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python src/prepare.py
+    deps:
+    - path: params.yaml
+      hash: md5
+      md5: 2b5425d045856c4cec1c417edc4fc088
+      size: 162
+    - path: src/prepare.py
+      hash: md5
+      md5: a2b8285cc13a18468ab876c4baf1914f
+      size: 1551
+    outs:
+    - path: data/cifar100.npz
+      hash: md5
+      md5: 0d6c82cdd2bc08e5c3a928ed531280b3
+      size: 2949601134
+  train:
+    cmd: python src/train.py
+    deps:
+    - path: data/cifar100.npz
+      hash: md5
+      md5: 0d6c82cdd2bc08e5c3a928ed531280b3
+      size: 2949601134
+    - path: params.yaml
+      hash: md5
+      md5: 2b5425d045856c4cec1c417edc4fc088
+      size: 162
+    - path: src/train.py
+      hash: md5
+      md5: 27e6856c924356076a344ae43958e133
+      size: 1937
+    outs:
+    - path: metrics/train_metrics.json
+      hash: md5
+      md5: 2a870f63799b9403044f8c1742b8ab88
+      size: 69
+    - path: models/model.h5
+      hash: md5
+      md5: 62736e4bd0ef4799e5a45ea89bbad8c9
+      size: 19695992
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - path: data/cifar100.npz
+      hash: md5
+      md5: 0d6c82cdd2bc08e5c3a928ed531280b3
+      size: 2949601134
+    - path: models/model.h5
+      hash: md5
+      md5: 62736e4bd0ef4799e5a45ea89bbad8c9
+      size: 19695992
+    - path: src/evaluate.py
+      hash: md5
+      md5: 7d9d7fd72650de365809fb4bfea98656
+      size: 1107
+    outs:
+    - path: metrics/evaluate_metrics.json
+      hash: md5
+      md5: 3b74ee074da936c7dbac43c900e835af
+      size: 23
+    - path: plots/confusion.png
+      hash: md5
+      md5: c29b334c696971f848b474b9d03279b2
+      size: 16949
