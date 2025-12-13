@@ -9,8 +9,8 @@ stages:
       size: 162
     - path: src/prepare.py
       hash: md5
-      md5: a2b8285cc13a18468ab876c4baf1914f
-      size: 1551
+      md5: 0182aed61cb38cc68fec45758487c509
+      size: 1568
     outs:
     - path: data/cifar100.npz
       hash: md5

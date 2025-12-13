@@ -18,7 +18,7 @@ def main(params_path="params.yaml"):
     augment = params['prepare']['augment']        # True / False
 
     # Charger CIFAR-100
-    (x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar100.load_data()
+    (x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar100.load_data(label_mode='fine')
 
     # Normalisation entre 0 et 1
     x_train = x_train.astype("float32") / 255.0

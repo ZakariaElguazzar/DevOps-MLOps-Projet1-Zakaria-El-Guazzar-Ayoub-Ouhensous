@@ -1,0 +1,4 @@
+[core]
+    remote = remote_dvc_project
+['remote "remote_dvc_project"']
+    url = ../../mnt

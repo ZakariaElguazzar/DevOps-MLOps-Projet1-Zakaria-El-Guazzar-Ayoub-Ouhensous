@@ -5,3 +5,5 @@ pandas
 opencv-python
 albumentations
 dvc
+mlflow
+pyngrok
