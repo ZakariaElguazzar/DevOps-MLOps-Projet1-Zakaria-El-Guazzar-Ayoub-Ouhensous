@@ -1,31 +1,35 @@
 stages:
-  prepare:
-    cmd: python src/prepare.py
+  prepare_data:
+    cmd: python src/prepare_data.py
     deps:
-      - src/prepare.py
-      - params.yaml
-    outs:
-      - data/cifar100.npz
-
-  train:
-    cmd: python src/train.py
-    deps:
-      - src/train.py
+      - src/prepare_data.py
       - params.yaml
       - data/cifar100.npz
     outs:
-      - models/model.h5
-    metrics:
-      - metrics/train_metrics.json
+      - data/processed_data.npz
 
-  evaluate:
-    cmd: python src/evaluate.py
+  train_MobileNetV2:
+    cmd: python src/train_MobileNetV2.py
     deps:
-      - src/evaluate.py
-      - models/model.h5
-      - data/cifar100.npz
+      - src/train_MobileNetV2.py
+      - params.yaml
+      - data/processed_data.npz
     outs:
-      - plots/confusion.png
+      - models/MobileNetV2_bf_ft.keras
+      - models/MobileNetV2_ft.keras
     metrics:
-      - metrics/evaluate_metrics.json
+      - metrics/train_MobileNetV2_bf_ft_metrics.json
+      - metrics/train_MobileNetV2_ft_metrics.json
+
+  evaluate_MobileNetV2:
+    cmd: python src/evaluate_MobileNetV2.py
+    deps:
+      - src/evaluate_MobileNetV2.py
+      - models/MobileNetV2_ft.keras
+      - data/processed_data.npz
+    outs:
+      - plots/confusion_MobileNetV2.png
+    metrics:
+      - metrics/classification_report_MobileNetV2.json
+      - metrics/evaluate_MobileNetV2_metrics.json
 

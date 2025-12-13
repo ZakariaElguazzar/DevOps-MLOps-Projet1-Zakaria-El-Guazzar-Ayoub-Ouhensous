@@ -1,0 +1,99 @@
+# src/evaluate_MobileNetV2.py
+# =========================================
+# Evaluation script for MobileNetV2
+# =========================================
+
+import os
+import json
+import numpy as np
+import tensorflow as tf
+import matplotlib.pyplot as plt
+
+from pathlib import Path
+from sklearn.metrics import (
+    confusion_matrix,
+    classification_report,
+    accuracy_score
+)
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+
+# Fix for environments without GUI (server / CI)
+plt.switch_backend("Agg")
+
+
+# --------------------
+# CONFIG
+# --------------------
+
+DATA_PATH = "data/processed_data.npz"
+MODEL_PATH = "models/MobileNetV2_ft.keras"
+
+PLOTS_DIR = "plots/"
+METRICS_DIR = "metrics/"
+# --------------------
+# MAIN
+# --------------------
+def main():
+
+    # ---- Load data ----
+    data = np.load(DATA_PATH)
+    x_test = data["x_test"]
+    y_test = data["y_test"]
+
+    # MobileNet preprocessing
+    x_test = preprocess_input(x_test.astype("float32"))
+
+    # ---- Load model ----
+    model = tf.keras.models.load_model(MODEL_PATH)
+
+    test_loss,test_acc =model.evaluate(x_test, y_test, batch_size=32, verbose=2)
+
+    # ---- Prediction ----
+    y_pred_probs = model.predict(x_test, batch_size=32)
+    y_pred = y_pred_probs.argmax(axis=1)
+
+    # ---- Metrics ----
+    acc = accuracy_score(y_test, y_pred)
+    report = classification_report(y_test, y_pred, output_dict=True)
+    cm = confusion_matrix(y_test, y_pred)
+
+    # ---- Save metrics ----
+    metrics = {
+        "test_accuracy": float(test_acc),
+        "test_loss": float(test_loss),
+
+    }
+
+    with open(METRICS_DIR + "evaluate_MobileNetV2_metrics.json", "w") as f:
+        json.dump(metrics, f, indent=4)
+
+    with open(METRICS_DIR + "classification_report_MobileNetV2.json", "w") as f:
+        json.dump(report, f, indent=4)
+
+    # ---- Confusion Matrix Plot ----
+    plt.figure(figsize=(10, 8))
+    plt.imshow(cm)
+    plt.title("Confusion Matrix - MobileNetV2")
+    plt.colorbar()
+    plt.xlabel("Predicted label")
+    plt.ylabel("True label")
+
+    plt.tight_layout()
+    plt.savefig(PLOTS_DIR + "confusion_MobileNetV2.png", dpi=300)
+    plt.close()
+
+    print("✅ Evaluation completed")
+    print(f"📊 Test Accuracy: {acc:.4f}")
+    print(f"📊 Test Loss: {test_loss:.4f}")
+
+    print("📁 Saved:")
+    print(" - plots/confusion_MobileNetV2.png")
+    print(" - metrics/evaluate_MobileNetV2_metrics.json")
+    print(" - metrics/classification_report_MobileNetV2.json")
+
+
+# --------------------
+# ENTRY POINT
+# --------------------
+if __name__ == "__main__":
+    main()

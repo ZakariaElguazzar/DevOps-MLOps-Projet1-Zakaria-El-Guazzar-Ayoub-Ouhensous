@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Classification</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>🧠 Image Classification</h1>
+
+    <form action="/predict-ui" method="post" enctype="multipart/form-data">
+        <label>Choisir le modèle :</label>
+        <select name="model_name">
+            <option value="cnn">CNN Simple</option>
+            <option value="mobilenet">MobileNetV2</option>
+        </select>
+
+        <input type="file" name="file" required>
+
+        <button type="submit">Prédire</button>
+    </form>
+
+    {% if prediction %}
+    <div class="result">
+        <h2>Résultat</h2>
+        <p><strong>Modèle :</strong> {{ model }}</p>
+        <p><strong>Classe :</strong> {{ prediction }}</p>
+        <p><strong>Confiance :</strong> {{ confidence }}</p>
+    </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
+

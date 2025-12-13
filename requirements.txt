@@ -7,3 +7,9 @@ albumentations
 dvc
 mlflow
 pyngrok
+fastapi
+uvicorn
+pillow
+numpy
+python-multipart
+

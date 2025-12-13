@@ -64,3 +64,83 @@ stages:
       hash: md5
       md5: c29b334c696971f848b474b9d03279b2
       size: 16949
+  prepare_data:
+    cmd: python src/prepare_data.py
+    deps:
+    - path: data/cifar100.npz
+      hash: md5
+      md5: 0d6c82cdd2bc08e5c3a928ed531280b3
+      size: 2949601134
+    - path: params.yaml
+      hash: md5
+      md5: ea605d6d0d255034cfb4a4d6549b036b
+      size: 134
+    - path: src/prepare_data.py
+      hash: md5
+      md5: 4fec2ea9dd112a4b2f30fc7a256c00ac
+      size: 3630
+    outs:
+    - path: data/processed_data.npz
+      hash: md5
+      md5: 92848eea118fd3a3619777275d3f05a0
+      size: 884881486
+  train_MobileNetV2:
+    cmd: python src/train_MobileNetV2.py
+    deps:
+    - path: data/processed_data.npz
+      hash: md5
+      md5: 92848eea118fd3a3619777275d3f05a0
+      size: 884881486
+    - path: params.yaml
+      hash: md5
+      md5: ea605d6d0d255034cfb4a4d6549b036b
+      size: 134
+    - path: src/train_MobileNetV2.py
+      hash: md5
+      md5: 6fcf2ebb1bdd12fdbef86a3deb62408b
+      size: 5526
+    outs:
+    - path: metrics/train_MobileNetV2_bf_ft_metrics.json
+      hash: md5
+      md5: 58df465c63fba502cfd3c83c9a0ce2eb
+      size: 165
+    - path: metrics/train_MobileNetV2_ft_metrics.json
+      hash: md5
+      md5: e779c414ddab205f4cc8a04b124be539
+      size: 152
+    - path: models/MobileNetV2_bf_ft.keras
+      hash: md5
+      md5: 7425682f0e66a81592704d6ee918010c
+      size: 19166077
+    - path: models/MobileNetV2_ft.keras
+      hash: md5
+      md5: ba7784252bb702d8fa66de96aad8bb1e
+      size: 35970691
+  evaluate_MobileNetV2:
+    cmd: python src/evaluate_MobileNetV2.py
+    deps:
+    - path: data/processed_data.npz
+      hash: md5
+      md5: 92848eea118fd3a3619777275d3f05a0
+      size: 884881486
+    - path: models/MobileNetV2_ft.keras
+      hash: md5
+      md5: ba7784252bb702d8fa66de96aad8bb1e
+      size: 35970691
+    - path: src/evaluate_MobileNetV2.py
+      hash: md5
+      md5: f429913bf43546808c9671dbf9d4f254
+      size: 2562
+    outs:
+    - path: metrics/classification_report_MobileNetV2.json
+      hash: md5
+      md5: c0d14a2230111b49ae1b0f097f36c524
+      size: 4771
+    - path: metrics/evaluate_MobileNetV2_metrics.json
+      hash: md5
+      md5: 506e34648238d6b0a48f5f5e0aade128
+      size: 80
+    - path: plots/confusion_MobileNetV2.png
+      hash: md5
+      md5: 2b0b9bc1c75a052929e993e6d006f468
+      size: 92345
