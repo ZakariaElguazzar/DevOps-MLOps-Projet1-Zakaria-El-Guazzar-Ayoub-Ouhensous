@@ -5,7 +5,7 @@ from PIL import Image
 import tensorflow as tf
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input as mobilenet_preprocess
 
-IMG_SIZE = (128, 128, 3)
+IMG_SIZE = (128, 128)
 
 def preprocess_cnn(image: Image.Image):
     image = image.resize(IMG_SIZE)

@@ -16,6 +16,7 @@ import numpy as np
 import tensorflow as tf
 import mlflow
 import mlflow.keras
+import mlflow.sklearn
 
 # ========================
 # Keras / TensorFlow
@@ -39,6 +40,9 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.regularizers import l2
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
+mlflow.keras.autolog()      # Track automatique Keras
+mlflow.sklearn.autolog()    # Track automatique sklearn
+
 
 # --------------------
 # CONFIG
@@ -52,9 +56,6 @@ with open("params.yaml", 'r') as f:
     DATA_PATH = "data/processed_data.npz"
     MODEL_DIR = "models/"
     METRICS_DIR = "metrics/"
-
-
-print(BATCH_SIZE, INPUT_SHAPE, EPOCHS_PHASE1)
 
 # --------------------
 # DATA GENERATORS
@@ -169,9 +170,10 @@ with mlflow.start_run(run_name="CNN_simple_Training"):
         "train_accuracy": float(history.history['accuracy'][-1])
     }
 
+    mlflow.log_metrics(train_metrics)
+
     # Enregistrement dans metrics/train_CNN_simple_metrics.json
     with open(METRICS_DIR + "train_CNN_simple_metrics.json", "w") as f:
         json.dump(train_metrics, f)
 
-    #mlflow.keras.log_model(model, "mobilenet_phase1")
-    #mlflow.log_metric("test_acc_phase1", test_acc)
+    mlflow.keras.log_model(model, "CNN_simple")

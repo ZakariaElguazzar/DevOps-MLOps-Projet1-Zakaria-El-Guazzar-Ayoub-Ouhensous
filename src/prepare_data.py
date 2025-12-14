@@ -7,6 +7,8 @@ import pickle
 import numpy as np
 import tensorflow as tf
 import mlflow
+import mlflow.keras
+import mlflow.sklearn
 import yaml
 
 
@@ -14,6 +16,8 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 
+mlflow.keras.autolog()      # Track automatique Keras
+mlflow.sklearn.autolog()    # Track automatique sklearn
 
 # --------------------
 # CONFIG
@@ -59,9 +63,7 @@ def load_meta():
 def prepare_data():
     x_train, y_train, x_test, y_test = load_cifar100()
     class_names = load_meta()
-
-    print(x_train[0])
-
+    
     selected_indices = [class_names.index(c) for c in SELECTED_CLASSES]
 
     mask_train = np.isin(y_train, selected_indices)
@@ -86,9 +88,6 @@ def prepare_data():
     x_val = tf.image.resize(x_val*255, (128, 128), method='bicubic').numpy().astype(np.uint8)
     x_test = tf.image.resize(x_test*255, (128, 128), method='bicubic').numpy().astype(np.uint8)
 
-    print("Data prepared:")
-    print(x_train[0])
-
     print(f"Train size: {x_train.shape}")
     print(f"Val size: {x_val.shape}")
     print(f"Test size: {x_test.shape}")
@@ -104,14 +103,14 @@ def prepare_data():
 # --------------------
 if __name__ == "__main__":
 
-    #mlflow.start_run(run_name="Dataset_Preparation")
+    mlflow.start_run(run_name="Dataset_Preparation")
 
     x_train, y_train, x_val, y_val, x_test, y_test = prepare_data()
 
-    #mlflow.log_param("train_size", len(x_train))
-    #mlflow.log_param("val_size", len(x_val))
-    #mlflow.log_param("test_size", len(x_test))
-    #mlflow.log_param("num_classes", len(SELECTED_CLASSES))
+    mlflow.log_param("train_size", len(x_train))
+    mlflow.log_param("val_size", len(x_val))
+    mlflow.log_param("test_size", len(x_test))
+    mlflow.log_param("num_classes", len(SELECTED_CLASSES))
 
     np.savez(
         "data/processed_data.npz",
@@ -120,6 +119,6 @@ if __name__ == "__main__":
         x_test=x_test, y_test=y_test
     )
 
-    #mlflow.log_artifact("data/processed_data.npz")
+    mlflow.log_artifact("data/processed_data.npz")
 
-    #mlflow.end_run()
+    mlflow.end_run()

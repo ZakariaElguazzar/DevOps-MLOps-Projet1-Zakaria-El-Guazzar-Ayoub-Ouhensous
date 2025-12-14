@@ -5,6 +5,7 @@
 
 import mlflow
 import mlflow.keras
+import mlflow.sklearn
 import numpy as np
 import tensorflow as tf
 import yaml
@@ -20,6 +21,9 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.regularizers import l2
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+
+mlflow.keras.autolog()      # Track automatique Keras
+mlflow.sklearn.autolog()    # Track automatique sklearn
 
 
 # --------------------
@@ -118,9 +122,17 @@ callbacks_ft = [
 
 
 # --------------------
-# PHASE 1
+# PHASE 1 – Avant Fine-Tuning
 # --------------------
 with mlflow.start_run(run_name="MobileNetV2_Phase1"):
+
+    # Log params
+    mlflow.log_params({
+        "batch_size": BATCH_SIZE,
+        "epochs": EPOCHS_PHASE1,
+        "learning_rate": 1e-4,
+        "phase": "before_finetune"
+    })
 
     history = model.fit(
         train_gen,
@@ -129,32 +141,34 @@ with mlflow.start_run(run_name="MobileNetV2_Phase1"):
         callbacks=callbacks_bf_ft
     )
 
-    model.save(MODEL_DIR + "MobileNetV2_bf_ft.keras")
-
-    train_metrics_bf_ft = {
-        "val_loss_bf_ft": float(history.history['val_loss'][-1]),
-        "val_accuracy_bf_ft": float(history.history['val_accuracy'][-1]),
-        "train_loss_bf_ft": float(history.history['loss'][-1]),
-        "train_accuracy_bf_ft": float(history.history['accuracy'][-1])
+    # Log metrics train + val
+    metrics_bf_ft = {
+        "train_loss": float(history.history['loss'][-1]),
+        "train_accuracy": float(history.history['accuracy'][-1]),
+        "val_loss": float(history.history['val_loss'][-1]),
+        "val_accuracy": float(history.history['val_accuracy'][-1])
     }
+    mlflow.log_metrics(metrics_bf_ft)
 
-    # Enregistrement dans metrics/train_MobileNetV2_bf_ft_metrics.json
+    # Sauvegarde modèle
+    model.save(MODEL_DIR + "MobileNetV2_bf_ft.keras")
+    mlflow.keras.log_model(model, "MobileNetV2_bf_ft")
+
+    # Sauvegarde JSON
     with open(METRICS_DIR + "train_MobileNetV2_bf_ft_metrics.json", "w") as f:
-        json.dump(train_metrics_bf_ft, f)
-
-    #mlflow.keras.log_model(model, "mobilenet_phase1")
-    #mlflow.log_metric("test_acc_phase1", test_acc)
+        json.dump(metrics_bf_ft, f)
 
 
 # --------------------
-# PHASE 2 – FINE TUNING
+# PHASE 2 – Fine-Tuning
 # --------------------
 with mlflow.start_run(run_name="MobileNetV2_FineTuning"):
 
+    # Reload model
     model = load_model(MODEL_DIR + "MobileNetV2_bf_ft.keras")
 
+    # Définir les couches à fine-tuner
     fine_tune_at = len(model.layers) - 90
-
     for layer in model.layers[:fine_tune_at]:
         layer.trainable = False
     for layer in model.layers[fine_tune_at:]:
@@ -166,6 +180,13 @@ with mlflow.start_run(run_name="MobileNetV2_FineTuning"):
         metrics=["accuracy"]
     )
 
+    mlflow.log_params({
+        "batch_size": BATCH_SIZE,
+        "epochs": EPOCHS_PHASE2,
+        "learning_rate": 1e-4,
+        "phase": "finetune"
+    })
+
     history_ft = model.fit(
         train_gen,
         validation_data=val_gen,
@@ -173,20 +194,19 @@ with mlflow.start_run(run_name="MobileNetV2_FineTuning"):
         callbacks=callbacks_ft
     )
 
-    model.save(MODEL_DIR + "MobileNetV2_ft.keras")
-
-    train_metrics_ft = {
-        "val_loss_ft": float(history_ft.history['val_loss'][-1]),
-        "val_accuracy_ft": float(history_ft.history['val_accuracy'][-1]),
-        "train_loss_ft": float(history_ft.history['loss'][-1]),
-        "train_accuracy_ft": float(history_ft.history['accuracy'][-1])
+    # Log metrics train + val
+    metrics_ft = {
+        "train_loss": float(history_ft.history['loss'][-1]),
+        "train_accuracy": float(history_ft.history['accuracy'][-1]),
+        "val_loss": float(history_ft.history['val_loss'][-1]),
+        "val_accuracy": float(history_ft.history['val_accuracy'][-1])
     }
+    mlflow.log_metrics(metrics_ft)
 
-    # Enregistrement dans metrics/train_MobileNetV2_ft_metrics.json
+    # Sauvegarde modèle
+    model.save(MODEL_DIR + "MobileNetV2_ft.keras")
+    mlflow.keras.log_model(model, "MobileNetV2_ft")
+
+    # Sauvegarde JSON
     with open(METRICS_DIR + "train_MobileNetV2_ft_metrics.json", "w") as f:
-        json.dump(train_metrics_ft, f)
-
-    #mlflow.keras.log_model(model, "mobilenet_finetuned")
-    #mlflow.log_metric("test_acc_finetuned", test_acc)
-
-
+        json.dump(metrics_ft, f)

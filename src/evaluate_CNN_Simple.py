@@ -7,6 +7,9 @@ import os
 import json
 import numpy as np
 import tensorflow as tf
+import mlflow
+import mlflow.keras
+import mlflow.sklearn
 import matplotlib.pyplot as plt
 
 from pathlib import Path
@@ -19,6 +22,9 @@ from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 
 # Fix for environments without GUI (server / CI)
 plt.switch_backend("Agg")
+
+mlflow.keras.autolog()      # Track automatique Keras
+mlflow.sklearn.autolog()    # Track automatique sklearn
 
 
 # --------------------
@@ -35,6 +41,8 @@ METRICS_DIR = "metrics/"
 # --------------------
 def main():
 
+    mlflow.start_run(run_name="Evaluate_CNN_simple")
+
     # ---- Load data ----
     data = np.load(DATA_PATH)
     x_test = data["x_test"]
@@ -47,6 +55,9 @@ def main():
     model = tf.keras.models.load_model(MODEL_PATH)
 
     test_loss,test_acc =model.evaluate(x_test, y_test, batch_size=32, verbose=2)
+
+    mlflow.log_metric("test_acc", test_acc)
+    mlflow.log_metric("test_loss", test_loss)
 
     # ---- Prediction ----
     y_pred_probs = model.predict(x_test, batch_size=32)
@@ -70,6 +81,8 @@ def main():
     with open(METRICS_DIR + "classification_report_CNN_simple.json", "w") as f:
         json.dump(report, f, indent=4)
 
+    mlflow.log_artifact(METRICS_DIR + "classification_report_CNN_simple.json", "classification_report")
+
     # ---- Confusion Matrix Plot ----
     plt.figure(figsize=(10, 8))
     plt.imshow(cm)
@@ -90,6 +103,9 @@ def main():
     print(" - plots/confusion_CNN_simple.png")
     print(" - metrics/evaluate_CNN_simple_metrics.json")
     print(" - metrics/classification_report_CNN_simple.json")
+
+    mlflow.log_artifact(PLOTS_DIR + "confusion_CNN_simple.png", "confusion_matrix")
+    mlflow.end_run()
 
 
 # --------------------

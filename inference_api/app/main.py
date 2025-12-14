@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, Query, Request
+from fastapi import FastAPI, UploadFile, File, Query, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -31,7 +31,7 @@ async def home(request: Request):
 @app.post("/predict-ui")
 async def predict_ui(
     request: Request,
-    model_name: str = Query(...),
+    model_name: str = Form(...),   # ✅ ICI
     file: UploadFile = File(...)
 ):
     image = Image.open(io.BytesIO(await file.read())).convert("RGB")
@@ -55,4 +55,3 @@ async def predict_ui(
             "model": model_name
         }
     )
-

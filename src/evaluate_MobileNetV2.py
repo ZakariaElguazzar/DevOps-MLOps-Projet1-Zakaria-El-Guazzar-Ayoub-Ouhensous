@@ -7,6 +7,9 @@ import os
 import json
 import numpy as np
 import tensorflow as tf
+import mlflow
+import mlflow.keras
+import mlflow.sklearn
 import matplotlib.pyplot as plt
 
 from pathlib import Path
@@ -19,6 +22,9 @@ from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 
 # Fix for environments without GUI (server / CI)
 plt.switch_backend("Agg")
+
+mlflow.keras.autolog()      # Track automatique Keras
+mlflow.sklearn.autolog()    # Track automatique sklearn
 
 
 # --------------------
@@ -35,6 +41,8 @@ METRICS_DIR = "metrics/"
 # --------------------
 def main():
 
+    mlflow.start_run(run_name="Evaluate_MobileNetV2")
+
     # ---- Load data ----
     data = np.load(DATA_PATH)
     x_test = data["x_test"]
@@ -48,6 +56,9 @@ def main():
 
     test_loss,test_acc =model.evaluate(x_test, y_test, batch_size=32, verbose=2)
 
+    mlflow.log_metric("test_acc", test_acc)
+    mlflow.log_metric("test_loss", test_loss)
+
     # ---- Prediction ----
     y_pred_probs = model.predict(x_test, batch_size=32)
     y_pred = y_pred_probs.argmax(axis=1)
@@ -60,7 +71,7 @@ def main():
     # ---- Save metrics ----
     metrics = {
         "test_accuracy": float(test_acc),
-        "test_loss": float(test_loss),
+        "test_loss": float(test_loss)
 
     }
 
@@ -69,6 +80,10 @@ def main():
 
     with open(METRICS_DIR + "classification_report_MobileNetV2.json", "w") as f:
         json.dump(report, f, indent=4)
+
+    mlflow.log_artifact(METRICS_DIR + "classification_report_MobileNetV2.json", "classification_report")
+
+
 
     # ---- Confusion Matrix Plot ----
     plt.figure(figsize=(10, 8))
@@ -82,6 +97,8 @@ def main():
     plt.savefig(PLOTS_DIR + "confusion_MobileNetV2.png", dpi=300)
     plt.close()
 
+    mlflow.log_artifact(PLOTS_DIR + "confusion_MobileNetV2.png", "confusion_matrix")
+
     print("✅ Evaluation completed")
     print(f"📊 Test Accuracy: {acc:.4f}")
     print(f"📊 Test Loss: {test_loss:.4f}")
@@ -90,6 +107,8 @@ def main():
     print(" - plots/confusion_MobileNetV2.png")
     print(" - metrics/evaluate_MobileNetV2_metrics.json")
     print(" - metrics/classification_report_MobileNetV2.json")
+
+    mlflow.end_run()
 
 
 # --------------------
