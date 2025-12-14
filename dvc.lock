@@ -71,9 +71,13 @@ stages:
       hash: md5
       md5: 0d6c82cdd2bc08e5c3a928ed531280b3
       size: 2949601134
+    - path: data/meta
+      hash: md5
+      md5: 7973b15100ade9c7d40fb424638fde48
+      size: 1473
     - path: params.yaml
       hash: md5
-      md5: ea605d6d0d255034cfb4a4d6549b036b
+      md5: b5182999ad7fecf04b494fe42691f98d
       size: 134
     - path: src/prepare_data.py
       hash: md5
@@ -93,28 +97,28 @@ stages:
       size: 884881486
     - path: params.yaml
       hash: md5
-      md5: ea605d6d0d255034cfb4a4d6549b036b
+      md5: b5182999ad7fecf04b494fe42691f98d
       size: 134
     - path: src/train_MobileNetV2.py
       hash: md5
-      md5: 6fcf2ebb1bdd12fdbef86a3deb62408b
-      size: 5526
+      md5: ad352cb8299a16e0569dfc40b06cf7a8
+      size: 5392
     outs:
     - path: metrics/train_MobileNetV2_bf_ft_metrics.json
       hash: md5
-      md5: 58df465c63fba502cfd3c83c9a0ce2eb
-      size: 165
+      md5: d170c87cf35bf033bbe4c16757b960a0
+      size: 163
     - path: metrics/train_MobileNetV2_ft_metrics.json
       hash: md5
-      md5: e779c414ddab205f4cc8a04b124be539
-      size: 152
+      md5: f784066e875ad9889ab1e3a9840dcc88
+      size: 151
     - path: models/MobileNetV2_bf_ft.keras
       hash: md5
-      md5: 7425682f0e66a81592704d6ee918010c
+      md5: 17b89c2bf98aa40701ae49d5a837fb29
       size: 19166077
     - path: models/MobileNetV2_ft.keras
       hash: md5
-      md5: ba7784252bb702d8fa66de96aad8bb1e
+      md5: f70da87ff26decd4ad9d677c03943a1c
       size: 35970691
   evaluate_MobileNetV2:
     cmd: python src/evaluate_MobileNetV2.py
@@ -125,7 +129,7 @@ stages:
       size: 884881486
     - path: models/MobileNetV2_ft.keras
       hash: md5
-      md5: ba7784252bb702d8fa66de96aad8bb1e
+      md5: f70da87ff26decd4ad9d677c03943a1c
       size: 35970691
     - path: src/evaluate_MobileNetV2.py
       hash: md5
@@ -134,13 +138,65 @@ stages:
     outs:
     - path: metrics/classification_report_MobileNetV2.json
       hash: md5
-      md5: c0d14a2230111b49ae1b0f097f36c524
-      size: 4771
+      md5: 8064f69f2516a3dbb1576992581d6f86
+      size: 4730
     - path: metrics/evaluate_MobileNetV2_metrics.json
       hash: md5
-      md5: 506e34648238d6b0a48f5f5e0aade128
-      size: 80
+      md5: f11ad3c2c22d78376d77b42afc2b125c
+      size: 79
     - path: plots/confusion_MobileNetV2.png
       hash: md5
-      md5: 2b0b9bc1c75a052929e993e6d006f468
-      size: 92345
+      md5: 80ab5e1d01a96ab1e05b858990e1bca0
+      size: 92001
+  train_CNN_simple:
+    cmd: python src/train_CNN_simple.py
+    deps:
+    - path: data/processed_data.npz
+      hash: md5
+      md5: 92848eea118fd3a3619777275d3f05a0
+      size: 884881486
+    - path: params.yaml
+      hash: md5
+      md5: b5182999ad7fecf04b494fe42691f98d
+      size: 134
+    - path: src/train_CNN_simple.py
+      hash: md5
+      md5: 0aa3c123faab583342fc768c4559a450
+      size: 4451
+    outs:
+    - path: metrics/train_CNN_simple_metrics.json
+      hash: md5
+      md5: 2ee2c0c43f908c7fc5f52afaa8c0e591
+      size: 140
+    - path: models/CNN_simple.keras
+      hash: md5
+      md5: 14de35fa3cb451fd123ff05dd69b0def
+      size: 5642842
+  evaluate_CNN_Simple:
+    cmd: python src/evaluate_CNN_Simple.py
+    deps:
+    - path: data/processed_data.npz
+      hash: md5
+      md5: 92848eea118fd3a3619777275d3f05a0
+      size: 884881486
+    - path: models/CNN_simple.keras
+      hash: md5
+      md5: 14de35fa3cb451fd123ff05dd69b0def
+      size: 5642842
+    - path: src/evaluate_CNN_Simple.py
+      hash: md5
+      md5: 74668cad382badb67daad19f3f03e38d
+      size: 2552
+    outs:
+    - path: metrics/classification_report_CNN_simple.json
+      hash: md5
+      md5: 7e106b914a662460275625cae1a04e73
+      size: 4281
+    - path: metrics/evaluate_CNN_simple_metrics.json
+      hash: md5
+      md5: 47abc62a434da418b418098585baa071
+      size: 80
+    - path: plots/confusion_CNN_simple.png
+      hash: md5
+      md5: 1f5be909700b6ad0d81533aba9738424
+      size: 94642

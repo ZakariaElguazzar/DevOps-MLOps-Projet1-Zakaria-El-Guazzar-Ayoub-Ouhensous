@@ -16,8 +16,8 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
 # Load models once
-cnn_model = tf.keras.models.load_model("/home/zakaria-el-guazzar/Desktop/image-classification-dvc/models/training_checkpoint_bf_ft.keras")
-mobilenet_model = tf.keras.models.load_model("/home/zakaria-el-guazzar/Desktop/image-classification-dvc/models/training_checkpoint_bf_ft.keras")
+cnn_model = tf.keras.models.load_model("../models/CNN_simple.keras")
+mobilenet_model = tf.keras.models.load_model("../models/MobileNetV2_ft.keras")
 
 
 @app.get("/", response_class=HTMLResponse)

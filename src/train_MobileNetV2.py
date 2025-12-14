@@ -49,7 +49,7 @@ data = np.load(DATA_PATH)
 
 x_train, y_train = data["x_train"], data["y_train"]
 x_val, y_val = data["x_val"], data["y_val"]
-x_test, y_test = data["x_test"], data["y_test"]
+
 train_datagen = ImageDataGenerator(
         preprocessing_function=preprocess_input,
         rotation_range=20,
@@ -66,7 +66,6 @@ val_test_datagen = ImageDataGenerator(
 
 train_gen = train_datagen.flow(x_train, y_train, batch_size=BATCH_SIZE)
 val_gen = val_test_datagen.flow(x_val, y_val, batch_size=BATCH_SIZE, shuffle=False)
-test_gen = val_test_datagen.flow(x_test, y_test, batch_size=BATCH_SIZE, shuffle=False)
 
 
 # --------------------

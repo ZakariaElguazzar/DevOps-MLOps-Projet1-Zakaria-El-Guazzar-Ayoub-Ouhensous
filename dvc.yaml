@@ -5,6 +5,7 @@ stages:
       - src/prepare_data.py
       - params.yaml
       - data/cifar100.npz
+      - data/meta
     outs:
       - data/processed_data.npz
 
@@ -20,6 +21,17 @@ stages:
     metrics:
       - metrics/train_MobileNetV2_bf_ft_metrics.json
       - metrics/train_MobileNetV2_ft_metrics.json
+      
+  train_CNN_simple:
+   cmd: python src/train_CNN_simple.py
+   deps:
+     - src/train_CNN_simple.py
+     - params.yaml
+     - data/processed_data.npz
+   outs:
+     - models/CNN_simple.keras
+   metrics:
+     - metrics/train_CNN_simple_metrics.json
 
   evaluate_MobileNetV2:
     cmd: python src/evaluate_MobileNetV2.py
@@ -27,9 +39,21 @@ stages:
       - src/evaluate_MobileNetV2.py
       - models/MobileNetV2_ft.keras
       - data/processed_data.npz
-    outs:
+    plots:
       - plots/confusion_MobileNetV2.png
     metrics:
       - metrics/classification_report_MobileNetV2.json
       - metrics/evaluate_MobileNetV2_metrics.json
+      
+  evaluate_CNN_Simple:
+    cmd: python src/evaluate_CNN_Simple.py
+    deps:
+      - src/evaluate_CNN_Simple.py
+      - models/CNN_simple.keras
+      - data/processed_data.npz
+    plots:
+      - plots/confusion_CNN_simple.png
+    metrics:
+      - metrics/classification_report_CNN_simple.json
+      - metrics/evaluate_CNN_simple_metrics.json
 

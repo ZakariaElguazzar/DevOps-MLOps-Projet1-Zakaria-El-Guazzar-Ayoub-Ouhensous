@@ -3,7 +3,7 @@ prepare:
   augment: true
   batch_size: 32
 train:
-  epochs: 1
+  epochs: 2
   batch_size: 32
   lr: 0.001
 evaluate:
