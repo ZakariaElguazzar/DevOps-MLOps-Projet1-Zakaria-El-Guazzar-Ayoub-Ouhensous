@@ -8,3 +8,4 @@ reports/
 .dvc/config
 x_test_images/
 mlruns/
+mlflow.db
