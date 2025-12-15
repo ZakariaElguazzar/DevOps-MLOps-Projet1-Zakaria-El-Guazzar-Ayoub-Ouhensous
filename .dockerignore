@@ -1,0 +1,7 @@
+mlruns/
+mlflow.db
+__pycache__/
+.git/
+.dvc/
+data/cifar100.npz
+data/processed_data.npz
