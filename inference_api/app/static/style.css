@@ -1,47 +1,239 @@
+/* --- 1. GENERAL STYLING AND MODERNIZATION --- */
+:root {
+    --primary-color: #4f46e5; /* Indigo */
+    --primary-hover: #4338ca;
+    --secondary-color: #10b981; /* Emerald */
+    --background-color: #f9fafb; /* Light gray background */
+    --card-background: #ffffff;
+    --text-color: #1f2937; /* Dark gray text */
+    --border-color: #e5e7eb;
+    --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f9;
+    font-family: 'Inter', 'Arial', sans-serif; /* Using Inter as a modern sans-serif fallback */
+    background: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
 .container {
-    width: 400px;
-    margin: 80px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 480px; /* Slightly wider container for better layout */
+    margin: 40px auto;
+    padding: 30px;
+    background: var(--card-background);
+    border-radius: 16px;
+    box-shadow: var(--shadow-light);
+}
+
+/* --- 2. TYPOGRAPHY --- */
+header {
+    margin-bottom: 30px;
 }
 
 h1 {
     text-align: center;
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-top: 0;
 }
 
+h1 span {
+    font-size: 1.5rem;
+    margin-left: 5px;
+}
+
+/* --- 3. FORM STYLING --- */
 form {
     display: flex;
     flex-direction: column;
+    gap: 20px; /* Consistent spacing between form elements */
 }
 
-select, input, button {
-    margin: 10px 0;
-    padding: 10px;
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #374151;
 }
 
-button {
-    background: #2563eb;
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #f9fafb;
+    appearance: none; /* Remove default arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%234f46e5'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.5em 1.5em;
+    cursor: pointer;
+}
+
+/* Hide the default file input */
+#file-input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+/* --- 4. IMAGE PREVIEW AND CUSTOM FILE INPUT --- */
+.file-upload-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.custom-file-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px dashed var(--primary-color);
+    border-radius: 12px;
+    background-color: #eff6ff; /* Light blue background */
+    color: var(--primary-color);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.custom-file-label:hover {
+    background-color: #e0e7ff;
+    border-color: var(--primary-hover);
+}
+
+.custom-file-label .icon {
+    font-size: 1.2rem;
+    margin-right: 10px;
+}
+
+.image-preview-container {
+    width: 100%;
+    height: 200px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: #f3f4f6;
+}
+
+#image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure the image fits without cropping */
+    transition: opacity 0.3s;
+}
+
+#image-preview.hidden {
+    display: none;
+}
+
+#preview-text {
+    color: #6b7280;
+    font-style: italic;
+}
+
+/* --- 5. BUTTON STYLING --- */
+.btn-primary {
+    padding: 12px 20px;
+    background: var(--primary-color);
     color: white;
     border: none;
     cursor: pointer;
-    border-radius: 5px;
-}
-
-button:hover {
-    background: #1e40af;
-}
-
-.result {
-    margin-top: 20px;
-    padding: 15px;
-    background: #eef2ff;
     border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.1s;
 }
 
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+.btn-primary:active {
+    transform: scale(0.99);
+}
+
+/* --- 6. RESULT FEEDBACK STYLING --- */
+.result-card {
+    margin-top: 30px;
+    padding: 25px;
+    background: #ecfdf5; /* Very light green/teal for success */
+    border: 1px solid #a7f3d0; /* Light green border */
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+}
+
+.result-card h2 {
+    color: var(--secondary-color);
+    font-size: 1.4rem;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 1px solid #d1fae5;
+    padding-bottom: 10px;
+}
+
+.result-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+    text-align: center;
+}
+
+.detail-item {
+    background: var(--card-background);
+    padding: 15px 10px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.detail-item .icon {
+    font-size: 1.5rem;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.detail-item .label {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-item .value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-top: 5px;
+}
+
+.prediction-item {
+    grid-column: 1 / -1; /* Span across all columns */
+    background: #d1fae5; /* Highlight for the main prediction */
+    border: 1px solid var(--secondary-color);
+}
+
+.prediction-item .value-large {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--secondary-color);
+    margin-top: 5px;
+}

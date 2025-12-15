@@ -1,37 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Image Classification</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classification d'Images 🧠</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
 <div class="container">
-    <h1>🧠 Image Classification</h1>
+    <header>
+        <h1>Classification d'Images <span>🧠</span></h1>
+    </header>
 
     <form action="/predict-ui" method="post" enctype="multipart/form-data">
-        <label>Choisir le modèle :</label>
-        <select name="model_name">
-            <option value="cnn">CNN Simple</option>
-            <option value="mobilenet">MobileNetV2</option>
-        </select>
+        
+        <div class="form-group">
+            <label for="model-select">Choisir le modèle :</label>
+            <select name="model_name" id="model-select">
+                <option value="cnn">CNN Simple</option>
+                <option value="mobilenet">MobileNetV2</option>
+            </select>
+        </div>
 
-        <input type="file" name="file" required>
+        <div class="file-upload-area">
+            <input type="file" name="file" id="file-input" accept="image/*" required>
+            <label for="file-input" class="custom-file-label">
+                <span class="icon">⬆️</span>
+                <span class="text">Sélectionner une image</span>
+            </label>
+            <div class="image-preview-container">
+                <img id="image-preview" src="placeholder.png" alt="Prévisualisation de l'image" class="hidden">
+                <p id="preview-text">Aucune image sélectionnée</p>
+            </div>
+        </div>
 
-        <button type="submit">Prédire</button>
+        <button type="submit" class="btn-primary">Prédire</button>
     </form>
 
     {% if prediction %}
-    <div class="result">
-        <h2>Résultat</h2>
-        <p><strong>Modèle :</strong> {{ model }}</p>
-        <p><strong>Classe :</strong> {{ prediction }}</p>
-        <p><strong>Confiance :</strong> {{ confidence }}</p>
+    <div class="result-card">
+        <h2>Résultat de la Prédiction</h2>
+        
+        <div class="result-details">
+            <div class="detail-item">
+                <span class="icon">🤖</span>
+                <p class="label">Modèle</p>
+                <p class="value">{{ model }}</p>
+            </div>
+            
+            <div class="detail-item prediction-item">
+                <span class="icon">🏷️</span>
+                <p class="label">Classe Prédite</p>
+                <p class="value-large">{{ prediction }}</p>
+            </div>
+            
+            <div class="detail-item">
+                <span class="icon">✅</span>
+                <p class="label">Confiance</p>
+                <p class="value">{{ confidence }}</p>
+            </div>
+        </div>
     </div>
     {% endif %}
 </div>
 
+<!-- Note: Le code JavaScript pour la prévisualisation doit être ajouté ici -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const fileInput = document.getElementById('file-input');
+        const imagePreview = document.getElementById('image-preview');
+        const previewText = document.getElementById('preview-text');
+        const customLabelText = document.querySelector('.custom-file-label .text');
+
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                    previewText.style.display = 'none';
+                    customLabelText.textContent = file.name;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.src = 'placeholder.png';
+                imagePreview.classList.add('hidden');
+                previewText.style.display = 'block';
+                customLabelText.textContent = 'Sélectionner une image';
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
-
